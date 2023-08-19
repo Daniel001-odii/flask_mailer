@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>A Techzone visitor sent a message</title>
+</head>
+<body>
+    <h1 style=" 
+     text-align: center;
+    background: #4e79bc;
+    color: #FFF;
+    padding: 15px;">A Techzone visitor sent a message</h1>
+
+
+    <div style="
+    border-bottom: 2px dotted #efefef;
+    padding: 10px;
+    font-size: 22px;" class="message">{{ message }}</div>
+
+    <div style="
+    border-bottom: 2px dotted #efefef;
+    padding: 10px;
+    font-weight: bold;
+    font-size: 16px;" class="name">Name: {{ name }}</div>
+
+    <div style="
+    padding: 10px;
+    font-weight: bold;
+    font-size: 16px;" class="email">Email: {{ email }}</div>
+
+    <div style="
+    padding: 10px;
+    font-weight: bold;
+    font-size: 16px;" class="phone">Phone: 0{{ phone }}</div>
+</body>
+
+
+<style>
+body{
+    width: 400px;
+    margin: 0 auto;
+    height: 100vh;
+}
+h1{
+    text-align: center;
+    background: #4e79bc;
+    color: #FFF;
+    padding: 15px;
+}
+
+.message, .name, .email, .phone{
+    border-bottom: 2px dotted #efefef;
+    padding: 10px;
+    font-weight: bold;
+    font-size: 16px;
+}
+
+</style>
+</html>
