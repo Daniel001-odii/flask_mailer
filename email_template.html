@@ -2,36 +2,44 @@
 <html>
 <head>
     <title>A Techzone visitor sent a message</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
 </head>
-<body style="background: #fff; padding: 10px;">
-    <h1 style=" 
-     text-align: center;
-    background: #4e79bc;
-    color: #FFF;
-    padding: 15px;">A Techzone visitor sent a message</h1>
+<body >
+    <div class="mail_body" style="background: #fff; padding: 10px;">
+        <div class="header" style="">
+            <img src="https://raw.githubusercontent.com/Daniel001-odii/tempCss/main/techzone_white.png" height="30px"/>
+        </div>
 
 
-    <div style="
-    border-bottom: 2px dotted #efefef;
-    padding: 10px;
-    font-size: 22px;" class="message">{{ message }}</div>
+        <p style="font-size: 20px; padding: 5px;">You have a new message from {{ name }}, who sent a message via the support form.</p>
 
-    <div style="
-    border-bottom: 2px dotted #efefef;
-    padding: 10px;
-    font-weight: bold;
-    font-size: 16px;" class="name">Name: {{ name }}</div>
 
-    <div style="
-    padding: 10px;
-    font-weight: bold;
-    font-size: 16px;" class="email">Email: {{ email }}</div>
+        <div style="font-size: 20px; padding: 15px;" class="message">{{ message }}</div>
 
-    <div style="
-    padding: 10px;
-    font-weight: bold;
-    font-size: 16px;" class="phone">Phone: 0{{ phone }}</div>
-</body>
+        <div style="font-size: 20px;padding: 5px;" class="name">Name: {{ name }}</div>
+
+        <div style="font-size: 20px;padding: 5px;" class="email">Email: {{ email }}</div>
+        
+        <div style="font-size: 20px; padding: 5px;" class="phone">
+            Phone: 
+            <a href="tel:0{{ phone }}">
+               0{{ phone }}
+            </a>
+        </div>
+
+        <a href="mailto:{{ email }}">
+            <button style="
+            margin-top: 50px;
+            width: 100%;
+            text-align: center;
+            background: #4e79bc;
+            color: #FFF;
+            border: none;
+            font-size: 20px;
+            padding: 12px;" class="reply_button"> Respond </button>
+        </a>
+    </div>
+
 
 
 <style>
@@ -39,6 +47,9 @@ body{
     width: 400px;
     margin: 0 auto;
     height: 100vh;
+    background: grey;
+    font-family: 'Poppins', sans-serif;
+    font-size: 14px !important;
 }
 h1{
     text-align: center;
@@ -47,12 +58,6 @@ h1{
     padding: 15px;
 }
 
-.message, .name, .email, .phone{
-    border-bottom: 2px dotted #efefef;
-    padding: 10px;
-    font-weight: bold;
-    font-size: 16px;
-}
-
 </style>
+</body>
 </html>

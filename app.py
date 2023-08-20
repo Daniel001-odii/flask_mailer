@@ -20,29 +20,31 @@ mail = Mail(app)
 #this first function is used for sending a predefined email for test....
 @app.route('/custom', methods=['GET', 'POST'])
 def custom_email():
-    msg = Message(
-        'New Contact Form Submission',
+    msg = Message(f'{name} via Techzone support form',
         sender='deoscomputers@gmail.com',
-        recipients=['xenithheight@gmail.com']
+        recipients=['xenithheight@gmail.com', 'deoscomputers@gmail.com']
     )
     name = "anon"
     email = "anonTest@techzone.com"
     phone = "234567890"
     message = "this is a test email"
     msg.body = f"Name: {name}\nEmail: {email}\nPhone: {phone}\nMessage: {message}"
+    email_content = render_template_string(
+        open('email_template.html').read(),
+        name=name, email=email, phone=phone, message=message
+    )
+    
+    msg.html = email_content
     mail.send(msg)
     return jsonify({'message': 'Form submitted successfully'})
 
 
 
 def send_email(name, email, phone, message):
-    msg = Message(
-        'A User from Techzone',
+    msg = Message( f'{name} via Techzone support form',
         sender='deoscomputers@gmail.com',
         recipients=['xenithheight@gmail.com']
     )
-    # msg.body = f"Name: {name}\nEmail: {email}\nPhone: {phone}\nMessage: {message}"
-    # mail.send(msg)
     email_content = render_template_string(
         open('email_template.html').read(),
         name=name, email=email, phone=phone, message=message
