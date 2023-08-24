@@ -1,4 +1,4 @@
-from flask import Flask, render_template, request, jsonify, send_file, make_response, 
+from flask import Flask, render_template, request, jsonify, send_file, make_response
 from flask_mail import Mail, Message
 from flask_cors import CORS
 from flask import render_template_string
@@ -44,7 +44,6 @@ def custom_email():
     return jsonify({'message': 'Form submitted successfully'})
 
 
-
 def send_email(name, email, phone, message):
     msg = Message( f'{name} via Techzone support form',
         sender='deoscomputers@gmail.com',
@@ -57,7 +56,6 @@ def send_email(name, email, phone, message):
     
     msg.html = email_content
     mail.send(msg)
-
 
 
 @app.route('/', methods=['GET', 'POST'])
@@ -107,6 +105,8 @@ def api_video_info():
         except Exception as e:
             return jsonify({"error": "An error occurred: " + str(e)})
     return jsonify({"error": "URL parameter is required."})
+
+    
 # API endpoint to download a video
 @app.route("ytubefetch/api/download", methods=["GET"])
 def api_download():
