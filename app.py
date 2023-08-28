@@ -99,16 +99,18 @@ def api_video_info():
     if url:
         try:
             yt = YouTube(url)
-            video_streams = yt.streams.filter(file_extension="mp4", progressive=True)
+            video_streams = yt.streams.filter(file_extension="mp4")
+            audio_streams = yt.streams.filter(only_audio=True)
+
             thumbnail_url = yt.thumbnail_url
-            resolutions = [{"resolution": stream.resolution, "size_mb": stream.filesize / (1024 * 1024), "download_link": f"/api/download?url={url}&resolution={stream.resolution}"} for stream in video_streams]
-            # resolutions = [{"resolution": stream.resolution, "size": stream.filesize, "download_link": f"/api/download?url={url}&resolution={stream.resolution}"} for stream in video_streams]
+            resolutions = [{"resolution": stream.resolution, "format": stream.mime_type, "size_mb": stream.filesize / (1024 * 1024), "download_link": f"/api/download?url={url}&resolution={stream.resolution}"} for stream in video_streams]
+            audio_formats = [{"format": stream.mime_type.split("/")[-1], "size_mb": stream.filesize / (1024 * 1024), "download_link": f"/api/download?url={url}&resolution={stream.abr}"} for stream in audio_streams]
+            
             return jsonify({"title": yt.title, "resolutions": resolutions, "thumbnail_url": thumbnail_url})
         except Exception as e:
             return jsonify({"error": "An error occurred: " + str(e)})
     return jsonify({"error": "URL parameter is required."})
 
-# API endpoint to download a video
 @app.route("/api/download", methods=["GET"])
 def api_download():
     url = request.args.get("url")
@@ -119,7 +121,7 @@ def api_download():
 
     try:
         yt = YouTube(url)
-        video_stream = yt.streams.filter(res=resolution, file_extension="mp4", progressive=True).first()
+        video_stream = yt.streams.filter(res=resolution, file_extension="mp4").first()
         video_file = video_stream.download()
         filename = f"{yt.title}_{resolution}.mp4"
 
@@ -137,4 +139,5 @@ def api_download():
 
 if __name__ == "__main__":
     app.run(debug=True)
+
 
