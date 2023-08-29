@@ -100,13 +100,20 @@ def api_video_info():
         try:
             yt = YouTube(url)
             video_streams = yt.streams.filter(file_extension="mp4")
-            audio_streams = yt.streams.filter(only_audio=True)
+            audio_stream = yt.streams.filter(only_audio=True).order_by('abr').desc().first()
 
             thumbnail_url = yt.thumbnail_url
             resolutions = [{"resolution": stream.resolution, "format": stream.mime_type, "size_mb": stream.filesize / (1024 * 1024), "download_link": f"/api/download?url={url}&resolution={stream.resolution}"} for stream in video_streams]
-            audio_formats = [{"format": stream.mime_type.split("/")[-1], "size_mb": stream.filesize / (1024 * 1024), "download_link": f"/api/download?url={url}&resolution={stream.abr}"} for stream in audio_streams]
             
-            return jsonify({"title": yt.title, "resolutions": resolutions, "thumbnail_url": thumbnail_url})
+            if audio_stream:
+                audio_format = audio_stream.mime_type.split("/")[-1]
+                audio_link = f"/api/download?url={url}&resolution=audio"
+                audio_size_mb = audio_stream.filesize / (1024 * 1024)
+                audio_info = {"format": audio_format, "size_mb": audio_size_mb, "download_link": audio_link}
+            else:
+                audio_info = {"format": "N/A", "size_mb": 0, "download_link": ""}
+            
+            return jsonify({"title": yt.title, "resolutions": resolutions, "audio": audio_info, "thumbnail_url": thumbnail_url})
         except Exception as e:
             return jsonify({"error": "An error occurred: " + str(e)})
     return jsonify({"error": "URL parameter is required."})
@@ -121,17 +128,30 @@ def api_download():
 
     try:
         yt = YouTube(url)
-        video_stream = yt.streams.filter(res=resolution, file_extension="mp4").first()
-        video_file = video_stream.download()
-        filename = f"{yt.title}_{resolution}.mp4"
+        if resolution == "audio":
+            audio_stream = yt.streams.filter(only_audio=True).order_by('abr').desc().first()
+            audio_file = audio_stream.download()
+            filename = f"{yt.title}_audio.{audio_stream.mime_type.split('/')[-1]}"
 
-        with open(video_file, 'rb') as file:
-            video_content = file.read()
-        
-        response = make_response(video_content)
-        response.headers['Content-Type'] = 'video/mp4'
-        response.headers['Content-Disposition'] = f'attachment; filename={filename}'
-        return response
+            with open(audio_file, 'rb') as file:
+                audio_content = file.read()
+            
+            response = make_response(audio_content)
+            response.headers['Content-Type'] = f'audio/{audio_stream.mime_type.split("/")[-1]}'
+            response.headers['Content-Disposition'] = f'attachment; filename={filename}'
+            return response
+        else:
+            video_stream = yt.streams.filter(res=resolution, file_extension="mp4").first()
+            video_file = video_stream.download()
+            filename = f"{yt.title}_{resolution}.mp4"
+
+            with open(video_file, 'rb') as file:
+                video_content = file.read()
+            
+            response = make_response(video_content)
+            response.headers['Content-Type'] = 'video/mp4'
+            response.headers['Content-Disposition'] = f'attachment; filename={filename}'
+            return response
 
     except Exception as e:
         return jsonify({"error": "An error occurred while downloading: " + str(e)})
